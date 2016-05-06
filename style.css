@@ -1,0 +1,13 @@
+body {
+	text-align: center;
+	padding-top: 50px;
+}
+.green {
+	color: green;
+}
+.red {
+	color: red;
+}
+ul {
+	list-style-type: none;
+}
