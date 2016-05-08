@@ -83,7 +83,7 @@ if ($client->getAccessToken()) {
   );
 }
 
-echo pageHeader("User Query - Multiple APIs");
+echo pageHeader("Fetch Google Data and Show Stats");
 if (strpos($client_id, "googleusercontent") == false) {
   echo missingClientSecretsWarning();
   exit;
@@ -95,12 +95,12 @@ if (strpos($client_id, "googleusercontent") == false) {
 	<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-
+<!-- <iframe src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid=0" width="80%" height="300"></iframe> -->
 
 
 <?php 
 if (isset($authUrl)) {
-  echo "<a href='" . $authUrl . "'>Connect</a>";
+  echo "<a href='" . $authUrl . "'>Connect</a> <br /> \n";
 } else {
   echo "<a href='/?logout'>Log out</a>";
   echo "<h3>Results Of Drive List:</h3>";
@@ -206,7 +206,7 @@ $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
 /**
  * Get particular worksheet of the selected spreadsheet
  */
-$worksheetTitle = 'Sheet1'; // it's generally named 'Sheet1' 
+$worksheetTitle = 'Sheet1'; 
 $worksheetFeed = $spreadsheet->getWorksheets();
 $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
  
@@ -225,24 +225,29 @@ $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
  * Add/update headers of worksheet
  */
 $cellFeed = $worksheet->getCellFeed();
-$cellFeed->editCell(1,3, "name"); // 1st row, 3rd column
-$cellFeed->editCell(1,4, "age"); // 1st row, 4th column
+$cellFeed->editCell(1, 1, "filetype"); // 1st row, 3rd column
+$cellFeed->editCell(1, 2, "number"); // 1st row, 4th column
  
  
 /** 
  * Insert row entries
  * Supposing, that there are two headers 'name' and 'age'
  */
-$row = array('name'=>'John', 'age'=>25);
+//$row = array('filetype'=>'John', 'number'=>25);
 
  
  
 /**
  * Get row lists of worksheet
  */
-$listFeed = $worksheet->getListFeed();
- 
-$listFeed->insert($row); 
+foreach ($my_2 as $file_type=>$file_number) {
+
+  $listFeed = $worksheet->getListFeed();
+  $row = array('filetype'=>$file_type, 'number'=>$file_number); 
+  $listFeed->insert($row);
+  //echo $file_type." - ".$file_number."    ";
+}
+
 /**
  * Print row lists
  */
@@ -255,13 +260,14 @@ foreach ($listFeed->getEntries() as $entries) {
  * Update row entries
  * Supposing, that there are two headers 'name' and 'age'
  */
+/*
 $entries = $listFeed->getEntries();
 $listEntry = $entries[0]; // 0 = 1st row (editing value of first row)
 //$values = $listEntry->getValues(); 
-$values['name'] = 'Bob';
-$values['age'] = '45';
+$values['filetype'] = 'Bob';
+$values['number'] = '45';
 $listEntry->update($values);
-
+*/
 
 
 // $objPHPExcel = new PHPExcel();
