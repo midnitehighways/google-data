@@ -10,7 +10,9 @@ require 'vendor/autoload.php';
  ************************************************/
  $client_id = '958391346195-2io8faetghst4eumgdik32q3rv5u9jh4.apps.googleusercontent.com';
  $client_secret = 'BodELQQQQ_nmY53e4aEa3s9q';
- $redirect_uri = 'https://fetchandshow.herokuapp.com';
+ $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+ //'http://localhost:8080';
+ //$redirect_uri = 'https://fetchandshow.herokuapp.com';
 
 /************************************************
 		setting client values and scopes
@@ -96,19 +98,19 @@ if (isset($authUrl)) {
   echo "<h3>Results Of Drive List:</h3>";
   $my = array();
   foreach ($dr_results as $item) {
-    //echo $item->name, "<br /> \n";
-    $info = new SplFileInfo($item->name);           // get file extension
-    //array_push($my, $item->name);
+    echo $item->title, "<br /> \n";
+    $info = new SplFileInfo($item->title);           // get file extension
+    //array_push($my, $item->title);
     if($info->getExtension()) {
       array_push($my, $info->getExtension());
-      echo $info->getExtension(), "<br /> \n";
+      //echo $info->getExtension(), "<br /> \n";
     }
     else {                                           // no extension
       array_push($my, "none");
-      echo "none <br /> \n";
+      //echo "none <br /> \n";
     }
   }
-  //echo "hey",$dr_results->name;
+  //echo "hey",$dr_results->title;
   //echo "hiii",$my[6];
   print_r(array_count_values($my));
   $my_2 = array();
@@ -180,10 +182,13 @@ ServiceRequestFactory::setInstance($serviceRequest);
 /**
  * Get spreadsheet by title
  */
-$spreadsheetTitle = 'report';
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
+
+
+// -------
+// $spreadsheetTitle = 'report';
+// $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
+// $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
+// $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
  
  
 /**
@@ -196,10 +201,19 @@ $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
 /**
  * Get particular worksheet of the selected spreadsheet
  */
-$worksheetTitle = 'Sheet1'; 
-$worksheetFeed = $spreadsheet->getWorksheets();
-$worksheet = $worksheetFeed->getByTitle($worksheetTitle);
+
+
+
+
+
+// -------
+// $worksheetTitle = 'Sheet1'; 
+// $worksheetFeed = $spreadsheet->getWorksheets();
+// $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
  
+
+
+
  
 /**
  * Delete a particular worksheet from the spreadsheet
@@ -214,10 +228,19 @@ $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
 /** 
  * Add/update headers of worksheet
  */
-$cellFeed = $worksheet->getCellFeed();
-$cellFeed->editCell(1, 1, "filetype"); // 1st row, 3rd column
-$cellFeed->editCell(1, 2, "number"); // 1st row, 4th column
+
+
+
+
+// -------
+// $cellFeed = $worksheet->getCellFeed();
+// $cellFeed->editCell(1, 1, "filetype"); // 1st row, 1st column
+// $cellFeed->editCell(1, 2, "number"); // 1st row, 2nd column
  
+
+
+
+
  
 /** 
  * Insert row entries
@@ -230,21 +253,40 @@ $cellFeed->editCell(1, 2, "number"); // 1st row, 4th column
 /**
  * Get row lists of worksheet
  */
-foreach ($my_2 as $file_type=>$file_number) {
 
-  $listFeed = $worksheet->getListFeed();
-  $row = array('filetype'=>$file_type, 'number'=>$file_number); 
-  $listFeed->insert($row);
-  //echo $file_type." - ".$file_number."    ";
-}
+
+
+
+// -------
+// foreach ($my_2 as $file_type=>$file_number) {
+
+//   $listFeed = $worksheet->getListFeed();
+//   $row = array('filetype'=>$file_type, 'number'=>$file_number); 
+//   $listFeed->insert($row);
+//}
 
 /**
  * Print row lists
  */
-foreach ($listFeed->getEntries() as $entries) {
-  print_r($entries->getValues()); 
-}
+
+
+
+
+
+// -------
+
+// foreach ($listFeed->getEntries() as $entries) {
+//   print_r($entries->getValues()); 
+// }
  
+
+
+
+
+
+
+
+
  
 /**
  * Update row entries
