@@ -10,7 +10,7 @@ require 'vendor/autoload.php';
  ************************************************/
  $client_id = '958391346195-2io8faetghst4eumgdik32q3rv5u9jh4.apps.googleusercontent.com';
  $client_secret = 'BodELQQQQ_nmY53e4aEa3s9q';
- $redirect_uri = 'http://localhost:8080';
+ $redirect_uri = 'https://fetchandshow.herokuapp.com';
 
 /************************************************
 		setting client values and scopes
