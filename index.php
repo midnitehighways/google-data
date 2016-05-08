@@ -2,18 +2,8 @@
 include_once 'base.php';
 session_start();
 
-//require_once realpath(dirname(__FILE__) . '/../src/Google/autoload.php');
-require_once 'google-api-php-client/src/Google/autoload.php';
-// error_reporting(E_ALL);
-// ini_set('display_errors', TRUE);
-// ini_set('display_startup_errors', TRUE);
-// date_default_timezone_set('Europe/Helsinki');
-// define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
-// date_default_timezone_set('Europe/Helsinki');
-// require_once 'Classes/PHPExcel.php';
-
-
-
+//require_once 'google-api-php-client/src/Google/autoload.php';
+require 'vendor/autoload.php';
 
 /************************************************
 			secret values + redirect_uri
@@ -134,21 +124,21 @@ if (isset($authUrl)) {
 
 
 
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestInterface.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/DefaultServiceRequest.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Exception.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/UnauthorizedException.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestFactory.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetService.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetFeed.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Spreadsheet.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/WorksheetFeed.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Worksheet.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListFeed.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListEntry.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellFeed.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellEntry.php';
-require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Util.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestInterface.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/DefaultServiceRequest.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Exception.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/UnauthorizedException.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestFactory.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetService.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Spreadsheet.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/WorksheetFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Worksheet.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListEntry.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellEntry.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Util.php';
  
  
 /**
