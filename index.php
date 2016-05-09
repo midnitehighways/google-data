@@ -40,50 +40,40 @@ if (strpos($client_id, "googleusercontent") == false) {
 
 <?php 
 if (isset($authUrl)) {
-  echo "<a href='" . $authUrl . "'>Connect</a> <br /> \n";
+    echo "<a href='" . $authUrl . "'>Connect</a> <br /> \n";
 } else {
-  echo "<a href='/?logout'>Log out</a>";
-  echo ' Get drive file types: 
+    echo "<a href='/?logout'>Log out</a>";
+    echo '<form method="POST">
+            Trashed files <input type="checkbox" name="trashed" value="Yes" />
+            <input type="submit" name="submit">
+        </form>';
 
-    <form method="POST">
-        <input type="submit" name="submit">
-    </form>
+    //echo "<h3>Results Of Drive List:</h3>";
+    $drive_filetypes = array();
+    var_dump($_POST);
+    // function test_trashed($var) {
 
-    ';
-  echo "<h3>Results Of Drive List:</h3>";
-    // <script>
-    // $(document).ready(function(){
-    // $(".button").click(function(){
-    //     var clickBtnValue = $(this).val();
-    //     var ajaxurl = "ajax.php",
-    //     data =  {"action": clickBtnValue};
-    //     $.post(ajaxurl, data, function (response) {
-    //         // Response div goes here.
-    //         alert("action performed successfully"+response);
-    //     });
-    // });
-
-    // });
-    // </script>
-  $my = array();
-  foreach ($dr_results as $item) {
-    echo $item->title, "<br /> \n";
-    $info = new SplFileInfo($item->title);           // get file extension
-    //array_push($my, $item->title);
-    if($info->getExtension()) {
-      array_push($my, $info->getExtension());
-      //echo $info->getExtension(), "<br /> \n";
+    // }
+    foreach ($dr_results as $item) {
+        if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {       // either 'show trashed' checked or file isn't trashed
+            echo $item->createdDate, "<br /> \n";
+            $info = new SplFileInfo($item->title);           // get file extension
+            //array_push($my, $item->title);
+            if($info->getExtension()) {
+              array_push($drive_filetypes, $info->getExtension());
+              //echo $info->getExtension(), "<br /> \n";
+            }
+            else {                                           // no extension
+              array_push($drive_filetypes, "none");
+              //echo "none <br /> \n";
+            }
+        }
     }
-    else {                                           // no extension
-      array_push($my, "none");
-      //echo "none <br /> \n";
-    }
-  }
   //echo "hey",$dr_results->title;
   //echo "hiii",$my[6];
-  print_r(array_count_values($my));
+  //print_r(array_count_values($my));
   $my_2 = array();
-  $my_2 = array_count_values($my);
+  $my_2 = array_count_values($drive_filetypes);
   //echo "heyy",$my_2[0];
   echo "<h3>Results Of YouTube Likes:</h3>";
   foreach ($yt_results as $item) {

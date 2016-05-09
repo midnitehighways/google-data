@@ -25,7 +25,6 @@ function getDriveFiletypes($my_2) {
         $listFeed = $worksheet->getListFeed();
         $row = array('filetype'=>$file_type, 'number'=>$file_number); 
         $listFeed->insert($row);
-        echo file_type."!";
     }
 }
 
