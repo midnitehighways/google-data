@@ -1,6 +1,12 @@
 body {
 	text-align: center;
-	padding-top: 50px;
+	/*padding-top: 50px;*/
+}
+.spreadsheet {
+	
+	bottom: 0px;
+	width: 100%; 
+	height: 500px;
 }
 .green {
 	color: green;
