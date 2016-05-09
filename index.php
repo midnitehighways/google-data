@@ -7,8 +7,8 @@ require 'vendor/autoload.php';
 require_once 'client.php';
 
 /************************************************
-  If we're signed in, retrieve channels from YouTube
-  and a list of files from Drive.
+  If signed in -> get list of files from Google Drive   -> to $dr_results
+             AND  retrieve channels from YouTube        -> to $yt_results
  ************************************************/
 if ($client->getAccessToken()) {
   $_SESSION['access_token'] = $client->getAccessToken();
@@ -25,47 +25,51 @@ if ($client->getAccessToken()) {
 
 echo pageHeader("Fetch Google Data and Show Stats");
 if (strpos($client_id, "googleusercontent") == false) {
-  echo missingClientSecretsWarning();
-  exit;
+    echo missingClientSecretsWarning();
+    exit;
 }
 ?>
-<html>
+<!-- <html>
 <head>
 	<title>Google API</title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid=0"></iframe>
+ -->
+ <iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid=0"></iframe>
 
 
 <?php 
 if (isset($authUrl)) {
-    echo "<a href='" . $authUrl . "'>Connect</a> <br /> \n";
+    echo "<a href='" . $authUrl . "'>Start</a> <br /> \n";
 } else {
     echo "<a href='/?logout'>Log out</a>";
     echo '<form method="POST">
-            Trashed files <input type="checkbox" name="trashed" value="Yes" />
-            <input type="submit" name="submit">
+            Trashed files <input type="checkbox" name="trashed" value="yes" /><br/>
+            Show file types <input type="submit" name="submit"><br/>
+            Year of creation <input type="submit" name="year_created">
         </form>';
 
     //echo "<h3>Results Of Drive List:</h3>";
     $drive_filetypes = array();
+    $drive_created_dates = array();
     var_dump($_POST);
     // function test_trashed($var) {
 
     // }
+
     foreach ($dr_results as $item) {
         if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {       // either 'show trashed' checked or file isn't trashed
-            echo $item->createdDate, "<br /> \n";
-            $info = new SplFileInfo($item->title);           // get file extension
-            //array_push($my, $item->title);
+            echo $item->title, "<br /> \n";
+            $datetime = new DateTime($item->createdDate);
+            array_push($drive_created_dates, $datetime->format('Y'));
+
+            $info = new SplFileInfo($item->title);           // using this class to get file extension
             if($info->getExtension()) {
-              array_push($drive_filetypes, $info->getExtension());
-              //echo $info->getExtension(), "<br /> \n";
+              array_push($drive_filetypes, strtolower($info->getExtension()));
             }
             else {                                           // no extension
               array_push($drive_filetypes, "none");
-              //echo "none <br /> \n";
             }
         }
     }
@@ -73,7 +77,8 @@ if (isset($authUrl)) {
   //echo "hiii",$my[6];
   //print_r(array_count_values($my));
   $my_2 = array();
-  $my_2 = array_count_values($drive_filetypes);
+  $my_2 = array_count_values($drive_created_dates);
+  print_r($my_2);
   //echo "heyy",$my_2[0];
   echo "<h3>Results Of YouTube Likes:</h3>";
   foreach ($yt_results as $item) {
@@ -85,62 +90,15 @@ if (isset($authUrl)) {
 
 
 
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestInterface.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/DefaultServiceRequest.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Exception.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/UnauthorizedException.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestFactory.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetService.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetFeed.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Spreadsheet.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/WorksheetFeed.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Worksheet.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListFeed.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListEntry.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellFeed.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellEntry.php';
-// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Util.php';
- 
- 
-/**
- * AUTHENTICATE
- *
- */
-// These settings are found on google developer console
-const CLIENT_APP_NAME = 'mySpreadsheets';
-const CLIENT_ID       = '110200043135369381803';
-const CLIENT_EMAIL    = 'newphp-11@appspot.gserviceaccount.com';
-const CLIENT_KEY_PATH = 'newphp-9c49ef7b78fe.p12'; // PATH_TO_KEY = where you keep your key file
-const CLIENT_KEY_PW   = 'notasecret';
- 
-$objClientAuth  = new Google_Client ();
-$objClientAuth -> setApplicationName (CLIENT_APP_NAME);
-$objClientAuth -> setClientId (CLIENT_ID);
-$objClientAuth -> setAssertionCredentials (new Google_Auth_AssertionCredentials (
-    CLIENT_EMAIL, 
-    array('https://spreadsheets.google.com/feeds','https://docs.google.com/feeds'), 
-    file_get_contents (CLIENT_KEY_PATH), 
-    CLIENT_KEY_PW
-));
-// $objClientAuth->setAuthConfigFile('service_secrets.json');
-$objClientAuth->getAuth()->refreshTokenWithAssertion();
-$objToken  = json_decode($objClientAuth->getAccessToken());
-$accessToken = $objToken->access_token;
- 
- 
-/**
- * Initialize the service request factory
- */ 
-use Google\Spreadsheet\DefaultServiceRequest;
-use Google\Spreadsheet\ServiceRequestFactory;
- 
-$serviceRequest = new DefaultServiceRequest($accessToken);
-ServiceRequestFactory::setInstance($serviceRequest);
 
 require_once 'functions.php';
 if(isset($_POST["submit"])) {
-    getDriveFiletypes($my_2);
+    get_drive_filetypes(array_count_values($drive_filetypes));
 }
+if(isset($_POST["year_created"])) {
+    get_drive_created_dates(array_count_values($drive_created_dates));
+}
+
 /**
  * Get spreadsheet by title
  */

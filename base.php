@@ -1,5 +1,6 @@
 <?php
 /* Ad hoc functions to make the examples marginally prettier.*/
+date_default_timezone_set('Europe/Helsinki');
 function isWebRequest()
 {
   return isset($_SERVER['HTTP_USER_AGENT']);

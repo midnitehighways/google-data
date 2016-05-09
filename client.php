@@ -51,4 +51,60 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
 } else {
   $authUrl = $client->createAuthUrl();
 }
+
+
+
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestInterface.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/DefaultServiceRequest.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Exception.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/UnauthorizedException.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ServiceRequestFactory.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetService.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/SpreadsheetFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Spreadsheet.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/WorksheetFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Worksheet.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/ListEntry.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellFeed.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/CellEntry.php';
+// require_once 'php-google-spreadsheet-client/src/Google/Spreadsheet/Util.php';
+ 
+ 
+/**
+ * AUTHENTICATE
+ *
+ */
+// SERVICE ACCOUNT
+const CLIENT_APP_NAME = 'mySpreadsheets';
+const CLIENT_ID       = '110200043135369381803';
+const CLIENT_EMAIL    = 'newphp-11@appspot.gserviceaccount.com';
+const CLIENT_KEY_PATH = 'newphp-9c49ef7b78fe.p12'; // PATH_TO_KEY = where you keep your key file
+const CLIENT_KEY_PW   = 'notasecret';
+ 
+$objClientAuth  = new Google_Client ();
+$objClientAuth -> setApplicationName (CLIENT_APP_NAME);
+$objClientAuth -> setClientId (CLIENT_ID);
+$objClientAuth -> setAssertionCredentials (new Google_Auth_AssertionCredentials (
+    CLIENT_EMAIL, 
+    array('https://spreadsheets.google.com/feeds','https://docs.google.com/feeds'), 
+    file_get_contents (CLIENT_KEY_PATH), 
+    CLIENT_KEY_PW
+));
+// $objClientAuth->setAuthConfigFile('service_secrets.json');
+$objClientAuth->getAuth()->refreshTokenWithAssertion();
+$objToken  = json_decode($objClientAuth->getAccessToken());
+$accessToken = $objToken->access_token;
+ 
+ 
+/**
+ * Initialize the service request factory
+ */ 
+use Google\Spreadsheet\DefaultServiceRequest;
+use Google\Spreadsheet\ServiceRequestFactory;
+ 
+$serviceRequest = new DefaultServiceRequest($accessToken);
+ServiceRequestFactory::setInstance($serviceRequest);
+
+
 ?>
