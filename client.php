@@ -22,6 +22,7 @@ $client->addScope("https://www.googleapis.com/auth/youtube");
 
 // if($client->isAccessTokenExpired()) {         // to avoid "token expiration" issue
 
+//$client->refreshToken($client->getRefreshToken());
 //     $authUrl = $client->createAuthUrl();
 //     header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
 

@@ -5,7 +5,7 @@ session_start();
 //require_once 'google-api-php-client/src/Google/autoload.php';
 require 'vendor/autoload.php';
 require_once 'client.php';
-
+require_once 'functions.php';
 /************************************************
   If signed in -> get list of files from Google Drive   -> to $dr_results
              AND  retrieve channels from YouTube        -> to $yt_results
@@ -36,10 +36,11 @@ if (strpos($client_id, "googleusercontent") == false) {
 </head>
 <body>
  -->
- <iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid=0"></iframe>
+
 
 
 <?php 
+echo '<div class="left">';
 if (isset($authUrl)) {
     echo "<a href='" . $authUrl . "'>Start</a> <br /> \n";
 } else {
@@ -86,19 +87,19 @@ if (isset($authUrl)) {
   }
 }
 
+echo '</div>';
 
 
 
 
 
-require_once 'functions.php';
 if(isset($_POST["submit"])) {
     get_drive_filetypes(array_count_values($drive_filetypes));
 }
 if(isset($_POST["year_created"])) {
     get_drive_created_dates(array_count_values($drive_created_dates));
 }
-
+echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_drive_worksheet_id().'"></iframe>';
 /**
  * Get spreadsheet by title
  */
@@ -419,5 +420,3 @@ $listEntry->update($values);
 // session_destroy();
 
 ?>
-</body>
-</html>
