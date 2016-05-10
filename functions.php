@@ -4,8 +4,57 @@
 /**
  * Display fetched data in spreadsheet
  * @param array $result_array - contains data fetched from Drive
+ * @param array $table_header_1 - header for a worksheet
+ * @param array $column_position - OX-position (left-upper corner) for a table
  * @return nothing so far
  */
+function display_drive_data($result_array, $table_header_1, $table_header_2, $column_position) {
+    ksort($result_array);
+    // get spreadsheet by title
+    $spreadsheetTitle = 'report';
+    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
+    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
+    $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
+
+    // get particular worksheet of the selected spreadsheet
+    $worksheetTitle = 'Drive'; 
+    $worksheetFeed = $spreadsheet->getWorksheets();
+    $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
+
+    $worksheet->delete();
+
+    $spreadsheet->addWorksheet($worksheetTitle, 20, 10);
+    $worksheetFeed = $spreadsheet->getWorksheets();
+    $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
+
+    // set headers for a table
+    $cellFeed = $worksheet->getCellFeed();
+    $cellFeed->editCell(1, $column_position, $table_header_1);  
+    $cellFeed->editCell(1, $column_position+1, $table_header_2);
+
+    // display keys and values of fetched array in the spreadshit
+    $listFeed = $worksheet->getListFeed();
+
+    foreach ($result_array as $key=>$value) {
+        $row = array($table_header_1=>$key, $table_header_2=>$value); 
+        $listFeed->insert($row);
+    }
+
+
+}
+function get_drive_worksheet_id(){
+    $spreadsheetTitle = 'report';
+    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
+    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
+    $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
+
+    // get particular worksheet of the selected spreadsheet
+    $worksheetTitle = 'Drive'; 
+    $worksheetFeed = $spreadsheet->getWorksheets();
+    $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
+    return $worksheet->getGid();//->getWorksheetId();
+}
+
 function get_drive_filetypes($result_array) {
     ksort($result_array);
     // get spreadsheet by title
@@ -47,16 +96,9 @@ function get_drive_created_dates($result_array) {
 
     $worksheet->delete();
 
-    $spreadsheet->addWorksheet('Drive', 20, 10);
+    $spreadsheet->addWorksheet($worksheetTitle, 20, 10);
     $worksheetFeed = $spreadsheet->getWorksheets();
     $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
-
-    // $worksheetTitle = 'Sheet1'; 
-    // $worksheetFeed = $spreadsheet->getWorksheets();
-    // $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
-    // $worksheet->delete();
-
-
 
     // set headers for a table
     $cellFeed = $worksheet->getCellFeed();
@@ -79,16 +121,4 @@ function get_drive_created_dates($result_array) {
 
 }
 
-function get_drive_worksheet_id(){
-    $spreadsheetTitle = 'report';
-    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-    $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
-
-    // get particular worksheet of the selected spreadsheet
-    $worksheetTitle = 'Drive'; 
-    $worksheetFeed = $spreadsheet->getWorksheets();
-    $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
-    return $worksheet->getGid();//->getWorksheetId();
-}
 ?>

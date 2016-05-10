@@ -5,6 +5,7 @@ session_start();
 //require_once 'google-api-php-client/src/Google/autoload.php';
 require 'vendor/autoload.php';
 require_once 'client.php';
+
 require_once 'functions.php';
 /************************************************
   If signed in -> get list of files from Google Drive   -> to $dr_results
@@ -29,13 +30,6 @@ if (strpos($client_id, "googleusercontent") == false) {
     exit;
 }
 ?>
-<!-- <html>
-<head>
-	<title>Google API</title>
-	<link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
- -->
 
 
 
@@ -44,24 +38,22 @@ echo '<div class="left">';
 if (isset($authUrl)) {
     echo "<a href='" . $authUrl . "'>Start</a> <br /> \n";
 } else {
+    
     echo "<a href='/?logout'>Log out</a>";
     echo '<form method="POST">
-            Trashed files <input type="checkbox" name="trashed" value="yes" /><br/>
+            Trashed files <input type="checkbox" name="trashed" checked /><br/>
             Show file types <input type="submit" name="submit"><br/>
             Year of creation <input type="submit" name="year_created">
         </form>';
 
-    //echo "<h3>Results Of Drive List:</h3>";
     $drive_filetypes = array();
     $drive_created_dates = array();
-    var_dump($_POST);
-    // function test_trashed($var) {
-
-    // }
+    //var_dump($_POST);
 
     foreach ($dr_results as $item) {
         if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {       // either 'show trashed' checked or file isn't trashed
-            echo $item->title, "<br /> \n";
+//            echo $item->title, "<br /> \n";
+  
             $datetime = new DateTime($item->createdDate);
             array_push($drive_created_dates, $datetime->format('Y'));
 
@@ -74,17 +66,12 @@ if (isset($authUrl)) {
             }
         }
     }
-  //echo "hey",$dr_results->title;
-  //echo "hiii",$my[6];
-  //print_r(array_count_values($my));
-  $my_2 = array();
-  $my_2 = array_count_values($drive_created_dates);
-  print_r($my_2);
-  //echo "heyy",$my_2[0];
-  echo "<h3>Results Of YouTube Likes:</h3>";
-  foreach ($yt_results as $item) {
-    echo $item['snippet']['title'], "<br /> \n";
-  }
+  
+  //print_r(array_count_values($drive_created_dates));
+  //echo "<h3>Results Of YouTube Likes:</h3>";
+  //foreach ($yt_results as $item) {
+    //echo $item['snippet']['title'], "<br /> \n";
+  //}
 }
 
 echo '</div>';
@@ -94,10 +81,11 @@ echo '</div>';
 
 
 if(isset($_POST["submit"])) {
-    get_drive_filetypes(array_count_values($drive_filetypes));
+    display_drive_data(array_count_values($drive_filetypes), "type", "number", 1);
 }
+
 if(isset($_POST["year_created"])) {
-    get_drive_created_dates(array_count_values($drive_created_dates));
+    display_drive_data(array_count_values($drive_created_dates), "year", "filenumber", 4);
 }
 echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_drive_worksheet_id().'"></iframe>';
 /**
