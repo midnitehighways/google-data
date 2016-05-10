@@ -20,7 +20,7 @@ if ($client->getAccessToken()) {
   $likePlaylist = $yt_channels[0]->contentDetails->relatedPlaylists->likes;
   $yt_results = $yt_service->playlistItems->listPlaylistItems(
       "snippet",
-      array("playlistId" => $likePlaylist)
+      array("playlistId" => $likePlaylist, 'maxResults' => 50)
   );
 }
 
@@ -44,10 +44,12 @@ if (isset($authUrl)) {
             Trashed files <input type="checkbox" name="trashed" checked /><br/>
             Show file types <input type="submit" name="submit"><br/>
             Year of creation <input type="submit" name="year_created">
+            When liked? <input type="submit" name="year_liked">
         </form>';
 
     $drive_filetypes = array();
     $drive_created_dates = array();
+    $youtube_like_dates = array();
     //var_dump($_POST);
 
     foreach ($dr_results as $item) {
@@ -68,10 +70,13 @@ if (isset($authUrl)) {
     }
   
   //print_r(array_count_values($drive_created_dates));
-  //echo "<h3>Results Of YouTube Likes:</h3>";
-  //foreach ($yt_results as $item) {
-    //echo $item['snippet']['title'], "<br /> \n";
-  //}
+  echo "<h3>Results Of YouTube Likes:</h3>";
+  foreach ($yt_results as $item) {
+    echo $item['snippet']['title'], "<br /> \n";
+    echo $item['snippet']['publishedAt'], "<br /> \n";
+    $datetime = new DateTime($item['snippet']['publishedAt']);
+    array_push($youtube_like_dates, $datetime->format('Y'));
+  }
 }
 
 echo '</div>';
@@ -85,7 +90,11 @@ if(isset($_POST["submit"])) {
 }
 
 if(isset($_POST["year_created"])) {
-    display_drive_data(array_count_values($drive_created_dates), "year", "filenumber", 4);
+    display_drive_data(array_count_values($drive_created_dates), "year", "filenumber", 3);
+}
+
+if(isset($_POST["year_liked"])) {
+    display_drive_data(array_count_values($youtube_like_dates), "yearliked", "likenumber", 5);
 }
 echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_drive_worksheet_id().'"></iframe>';
 /**
