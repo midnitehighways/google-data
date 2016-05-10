@@ -1,19 +1,20 @@
 <?php
 
 
-function pageHeader($title)
+function html_header($title)
 {
-    $ret = "";
-    $ret .= "<!doctype html>
+    $html = "";
+    $html .= "<!doctype html>
     <html>
     <head>
-      <title>" . $title . "</title>
-      <link href='style.css' rel='stylesheet' type='text/css' />
-      <!--<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'></script>-->
+        <title>" . $title . "</title>
+        <link href='style.css' rel='stylesheet' type='text/css' />
+        <!--<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'></script>-->
     </head>
-    <body>\n";
-    $ret .= "<header><h3>" . $title . "</h3></header>";
-    return $ret;
+    <body>
+    <header><div>" . $title . "</div></header>
+            <div class='left'>";
+    return $html;
 }
 
 

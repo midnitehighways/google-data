@@ -1,6 +1,8 @@
 body {
 	text-align: center;
 	/*padding-top: 50px;*/
+	padding: 0;
+	margin: 0;
 }
 
 .spreadsheet {
@@ -23,8 +25,16 @@ body {
 
 header {
 	color: #777;
+	font-size: 18px;
 	letter-spacing: 3px;
  	font-weight: 300;
+ 	width: 100%;
+ 	height: 40px;
+ 	background: #eee;
+ 	padding: 0;
+}
+header div {
+	padding-top: 7px;
 }
 
 p {
@@ -33,6 +43,20 @@ p {
 
 ul {
 	list-style-type: none;
+}
+
+img {
+	height: auto; 
+    width: auto; 
+    max-width: 30px; 
+    max-height: 30px;
+    margin-top: 20px; 
+    padding: 10px 15px 10px 15px;
+    border: 1px solid #555;
+    border-radius: 8px;
+}
+.pic {
+    /*padding: 25px 15px 15px 15px;*/
 }
 
 .my-button {
@@ -52,8 +76,24 @@ ul {
  	cursor: pointer;
 }
 
-.my-button:hover {
+.my-button:hover, img:hover {
  	border-radius: 2px;
  	color: #0831EA;
  	transition: all .3s ease-in-out; 
+}
+.username {
+	position: absolute;
+	right: 140px;
+	top: 11px;
+	color: #555;
+}
+.logout {
+	position: absolute;
+	right: 40px;
+	top: 7px;
+	width: auto !important;
+	background: #eee !important;
+	color: #777 !important;
+	border: 1px solid #999 !important;	
+	padding: 0px 8px 2px 8px !important;
 }

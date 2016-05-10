@@ -23,36 +23,43 @@ if ($client->getAccessToken()) {
           array("playlistId" => $likePlaylist, 'maxResults' => 50)
     );
   //$yt_videos = $yt_service->videos->listVideos('contentDetails', array("playlistId" => $likePlaylist));
+    $about = $dr_service->about->get();     // use it later to ->getName() of authenticated user
 }
 
-echo pageHeader("Fetch Google Data and Show Stats");
+echo html_header("Fetch Google Data and Show Stats");
 ?>
 
 
-
 <?php 
-echo '<div class="left">';
+
 if (isset($authUrl)) {
     echo '<br><br><br><br><p>Welcome! This app needs your permission to get access to your Google Drive and Youtube accounts</p>
     <p>Please click "Start" to continue</p><br><br>
     <a class="my-button" href="' . $authUrl . '">Start</a> <br />';
 } else {
     
-    echo '<a class="my-button" href="/?logout">Log out</a><br /><br />';
-    
-    echo '<p>Display and systematize data from Google Drive</p>
+    echo '<a class="my-button logout" href="/?logout">Log out</a><br /><br />
+        <span class="username">Hi, ' . $about->getName() . '</span>
+        <p>Display and systematize data from Google Drive</p>
         <form method="POST">    
-<div class="drive">
+        <div class="drive">
             <span class=""> Consider trashed files <input type="checkbox" name="trashed" checked /></span><br/><br/>
             <input type="submit" class="my-button" value="File types" name="submit"><br/><br/>
             <input type="submit" class="my-button" value="Time created" name="year_created"><br/><br/>
             <input type="submit" class="my-button" value="List Drive files" name="list_files">
-</div>
+        </div>
             <br/><p>Retrive some data from YouTube</p>
-<div class="youtube">
+        <div class="youtube">
             <input type="submit" class="my-button" value="Time liked" name="year_liked"><br/><br/>
             <input type="submit" class="my-button" value="List liked videos" name="list_videos"><br/>
-</div>
+        </div>
+            <a class="pic" target="_blank" 
+            href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='
+            .get_data_worksheet_id().'"><img src="img/fullscreen.gif"></a>&nbsp&nbsp
+            <a class="pic" href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/export?format=xlsx">
+            <img src="img/save.png"></a>&nbsp&nbsp
+            <a class="pic" href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/export?format=xlsx">
+            <img src="img/clear.png"></a>
         </form>';
 
     $drive_filetypes = array();
@@ -117,6 +124,6 @@ if(isset($_POST["list_files"])) {
     echo "</ul>";
 }
 echo '</div>';
-echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_data_worksheet_id().'"></iframe>';
+// echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_data_worksheet_id().'"></iframe>';
 
 ?>
