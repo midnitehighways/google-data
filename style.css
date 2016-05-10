@@ -11,11 +11,37 @@ body {
 	float: left;
 	width: 40%;
 }
-.green {
-	color: green;
+.my-button {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 8px;
+  font-weight: 300;
+  width: 150px;
+  /*text-align: center;*/
+  color: #555;
+  background: #fff;
+  font-size: 18px;
+  text-decoration: none;
+  outline: none;
+  border: 1px solid #555;			
+  transition: all .3s ease-in-out; 
+  padding: 5px 10px 5px 10px;
+    cursor: pointer;
 }
-.red {
-	color: red;
+.my-button:hover {
+/*  -webkit-border-radius: 10;
+  -moz-border-radius: 10;*/
+  border-radius: 3px;
+  font-weight: 300;
+  color: #0831EA;
+  transition: all .3s ease-in-out; 
+
+}
+form {
+	padding: 10px;
+	border-radius: 7px;
+	border: 1px #ddd solid;
+
 }
 ul {
 	list-style-type: none;
