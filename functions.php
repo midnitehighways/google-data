@@ -32,6 +32,7 @@ function provide_clear_worksheet(){
 
     $spreadsheet->addWorksheet(WORKSHEET_TITLE, 15, 9);
     $worksheetFeed = $spreadsheet->getWorksheets();
+
     return $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
 }
 /**

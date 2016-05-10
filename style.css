@@ -57,8 +57,36 @@ img {
 }
 .pic {
     /*padding: 25px 15px 15px 15px;*/
-}
 
+}
+button {
+
+}
+/*.clear-icon {
+	background: url('img/clear.png') no-repeat;
+	background-size: 30px 30px;
+	width: 50px; 
+    height: 50px;
+
+    padding: 0px 15px 20px 15px;
+    border: 1px solid #555;
+    border-radius: 8px;
+
+}
+*/
+.youtube img, .drive img {
+	/*position: absolute;*/
+	float: left;
+	top: 5px;
+	left: 5px;
+	border: 0;
+	margin-right: -20px;
+
+}
+.drive img {
+	padding-top: 50px;
+	padding-bottom: 40px;
+}
 .my-button {
   	-webkit-border-radius: 10px;
   	-moz-border-radius: 10px;

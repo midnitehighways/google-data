@@ -43,6 +43,7 @@ if (isset($authUrl)) {
         <p>Display and systematize data from Google Drive</p>
         <form method="POST">    
         <div class="drive">
+            <img src="img/drive.ico">
             <span class=""> Consider trashed files <input type="checkbox" name="trashed" checked /></span><br/><br/>
             <input type="submit" class="my-button" value="File types" name="submit"><br/><br/>
             <input type="submit" class="my-button" value="Time created" name="year_created"><br/><br/>
@@ -50,16 +51,16 @@ if (isset($authUrl)) {
         </div>
             <br/><p>Retrive some data from YouTube</p>
         <div class="youtube">
+            <img src="img/youtube.png">
             <input type="submit" class="my-button" value="Time liked" name="year_liked"><br/><br/>
             <input type="submit" class="my-button" value="List liked videos" name="list_videos"><br/>
         </div>
-            <a class="pic" target="_blank" 
+            <a target="_blank" 
             href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='
             .get_data_worksheet_id().'"><img src="img/fullscreen.gif"></a>&nbsp&nbsp
-            <a class="pic" href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/export?format=xlsx">
+            <a href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/export?format=xlsx">
             <img src="img/save.png"></a>&nbsp&nbsp
-            <a class="pic" href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/export?format=xlsx">
-            <img src="img/clear.png"></a>
+            <a type="submit" name="clear" href="?clear">  <img src="img/clear.png"></a>
         </form>';
 
     $drive_filetypes = array();
@@ -107,6 +108,10 @@ if(isset($_POST["year_liked"])) {
     display_drive_data(array_count_values($youtube_like_dates), "yearliked", "likenumber", 2);
 }
 
+if(isset($_GET["clear"])) {
+    provide_clear_worksheet();
+}
+
 if(isset($_POST["list_videos"])) {
     echo "<h4>Your YouTube likes</h4><ul>";
     foreach ($yt_results as $item)
@@ -123,7 +128,8 @@ if(isset($_POST["list_files"])) {
     }
     echo "</ul>";
 }
+
 echo '</div>';
-// echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_data_worksheet_id().'"></iframe>';
+echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_data_worksheet_id().'"></iframe>';
 
 ?>
