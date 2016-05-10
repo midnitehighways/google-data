@@ -2,47 +2,58 @@ body {
 	text-align: center;
 	/*padding-top: 50px;*/
 }
+
 .spreadsheet {
-	width: 50%; 
+	width: 60%; 
 	height: 600px;
 	float: right;
 }
+
 .left {
 	float: left;
-	width: 40%;
+	width: 330px;
+	margin-left: 30px;
 }
-.my-button {
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 8px;
-  font-weight: 300;
-  width: 150px;
-  /*text-align: center;*/
-  color: #555;
-  background: #fff;
-  font-size: 18px;
-  text-decoration: none;
-  outline: none;
-  border: 1px solid #555;			
-  transition: all .3s ease-in-out; 
-  padding: 5px 10px 5px 10px;
-    cursor: pointer;
-}
-.my-button:hover {
-/*  -webkit-border-radius: 10;
-  -moz-border-radius: 10;*/
-  border-radius: 3px;
-  font-weight: 300;
-  color: #0831EA;
-  transition: all .3s ease-in-out; 
 
-}
-form {
+.youtube, .drive {
 	padding: 10px;
 	border-radius: 7px;
 	border: 1px #ddd solid;
-
 }
+
+header {
+	color: #777;
+	letter-spacing: 3px;
+ 	font-weight: 300;
+}
+
+p {
+	color: grey;
+}
+
 ul {
 	list-style-type: none;
+}
+
+.my-button {
+  	-webkit-border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	border-radius: 8px;
+  	font-weight: 300;
+  	width: 150px;
+ 	color: #333;
+ 	background: #fff;
+ 	font-size: 18px;
+ 	text-decoration: none;
+ 	outline: none;
+ 	border: 1px solid #555;			
+ 	transition: all .3s ease-in-out; 
+ 	padding: 5px 10px 5px 10px;
+ 	cursor: pointer;
+}
+
+.my-button:hover {
+ 	border-radius: 2px;
+ 	color: #0831EA;
+ 	transition: all .3s ease-in-out; 
 }

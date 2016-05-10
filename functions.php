@@ -1,6 +1,38 @@
 <?php
-//session_start();
 
+
+function pageHeader($title)
+{
+    $ret = "";
+    $ret .= "<!doctype html>
+    <html>
+    <head>
+      <title>" . $title . "</title>
+      <link href='style.css' rel='stylesheet' type='text/css' />
+      <!--<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'></script>-->
+    </head>
+    <body>\n";
+    $ret .= "<header><h3>" . $title . "</h3></header>";
+    return $ret;
+}
+
+
+function provide_clear_worksheet(){
+    // get spreadsheet by title
+    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
+    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
+    $spreadsheet = $spreadsheetFeed->getByTitle(SPREADSHEET_TITLE);
+
+    // get particular worksheet of the selected spreadsheet 
+    $worksheetFeed = $spreadsheet->getWorksheets();
+    $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
+
+    $worksheet->delete();
+
+    $spreadsheet->addWorksheet(WORKSHEET_TITLE, 15, 9);
+    $worksheetFeed = $spreadsheet->getWorksheets();
+    return $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
+}
 /**
  * Display fetched data in spreadsheet
  * @param array $result_array - contains data fetched from Drive
@@ -10,23 +42,7 @@
  */
 function display_drive_data($result_array, $table_header_1, $table_header_2, $column_position) {
     ksort($result_array);
-    // get spreadsheet by title
-    $spreadsheetTitle = 'report';
-    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-    $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
-
-    // get particular worksheet of the selected spreadsheet
-    $worksheetTitle = 'Drive'; 
-    $worksheetFeed = $spreadsheet->getWorksheets();
-    $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
-
-    $worksheet->delete();
-
-    $spreadsheet->addWorksheet($worksheetTitle, 20, 10);
-    $worksheetFeed = $spreadsheet->getWorksheets();
-    $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
-
+    $worksheet = provide_clear_worksheet();
     // set headers for a table
     $cellFeed = $worksheet->getCellFeed();
     $cellFeed->editCell(1, $column_position, $table_header_1);  
@@ -39,21 +55,32 @@ function display_drive_data($result_array, $table_header_1, $table_header_2, $co
         $row = array($table_header_1=>$key, $table_header_2=>$value); 
         $listFeed->insert($row);
     }
-
-
 }
-function get_drive_worksheet_id(){
-    $spreadsheetTitle = 'report';
+
+function get_data_worksheet_id(){
     $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
     $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-    $spreadsheet = $spreadsheetFeed->getByTitle($spreadsheetTitle);
+    $spreadsheet = $spreadsheetFeed->getByTitle(SPREADSHEET_TITLE);
 
-    // get particular worksheet of the selected spreadsheet
-    $worksheetTitle = 'Drive'; 
+    // get particular worksheet of the selected spreadsheet 
     $worksheetFeed = $spreadsheet->getWorksheets();
-    $worksheet = $worksheetFeed->getByTitle($worksheetTitle);
+    $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
     return $worksheet->getGid();//->getWorksheetId();
 }
+
+
+
+
+
+
+
+/*
+**************************************
+    OLD AND NOT USED FUNCTIONS BELOW
+    didn't remove 'just in case'
+**************************************
+*/ 
+
 
 function get_drive_filetypes($result_array) {
     ksort($result_array);

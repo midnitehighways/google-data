@@ -1,37 +1,31 @@
 <?php
-include_once 'base.php';
 session_start();
 
-//require_once 'google-api-php-client/src/Google/autoload.php';
 require 'vendor/autoload.php';
-require_once 'client.php';
+require 'const.php';            // constants, settings, client_secret
+require 'client.php';           // set clients, create services for YouTube, Drive, Worksheets
+require 'functions.php';        // almost all functions here
 
-require_once 'functions.php';
-/************************************************
-  If signed in -> get list of files from Google Drive   -> to $dr_results
-             AND  retrieve channels from YouTube        -> to $yt_results
- ************************************************/
+/*************************************************************************
+  If signed in -> get list of files from Google Drive    -> to $dr_results
+                  retrieve 'likes'-playlist from YouTube -> to $yt_results
+ *************************************************************************/
 if ($client->getAccessToken()) {
-  $_SESSION['access_token'] = $client->getAccessToken();
+    $_SESSION['access_token'] = $client->getAccessToken();
 
-  $dr_results = $dr_service->files->listFiles(array());
+    $dr_results = $dr_service->files->listFiles(array());
 
-  $yt_channels = $yt_service->channels->listChannels('contentDetails', array("mine" => true));
+    $yt_channels = $yt_service->channels->listChannels('contentDetails', array("mine" => true));
 
-  //$yt_channels = $yt_service->channels->listChannels('contentDetails', array("mine" => true));
-  $likePlaylist = $yt_channels[0]->contentDetails->relatedPlaylists->likes;
-  $yt_results = $yt_service->playlistItems->listPlaylistItems(
-      "snippet",
-      array("playlistId" => $likePlaylist, 'maxResults' => 50)
-  );
+    $likePlaylist = $yt_channels[0]->contentDetails->relatedPlaylists->likes;
+    $yt_results = $yt_service->playlistItems->listPlaylistItems(
+          "snippet",
+          array("playlistId" => $likePlaylist, 'maxResults' => 50)
+    );
   //$yt_videos = $yt_service->videos->listVideos('contentDetails', array("playlistId" => $likePlaylist));
 }
 
 echo pageHeader("Fetch Google Data and Show Stats");
-// if (strpos($client_id, "googleusercontent") == false) {
-//     echo missingClientSecretsWarning();
-//     exit;
-// }
 ?>
 
 
@@ -39,19 +33,26 @@ echo pageHeader("Fetch Google Data and Show Stats");
 <?php 
 echo '<div class="left">';
 if (isset($authUrl)) {
-    echo '<a class="my-button" href="' . $authUrl . '">Start</a> <br />';
+    echo '<br><br><br><br><p>Welcome! This app needs your permission to get access to your Google Drive and Youtube accounts</p>
+    <p>Please click "Start" to continue</p><br><br>
+    <a class="my-button" href="' . $authUrl . '">Start</a> <br />';
 } else {
     
     echo '<a class="my-button" href="/?logout">Log out</a><br /><br />';
     
-    echo 'Display and systematize data from Google Drive<br/><br/>
+    echo '<p>Display and systematize data from Google Drive</p>
         <form method="POST">    
+<div class="drive">
             <span class=""> Consider trashed files <input type="checkbox" name="trashed" checked /></span><br/><br/>
-            <input type="submit" class="my-button" value="File types" name="submit">
+            <input type="submit" class="my-button" value="File types" name="submit"><br/><br/>
             <input type="submit" class="my-button" value="Time created" name="year_created"><br/><br/>
-            <input type="submit" class="my-button" value="List Drive files" name="list_files"><br/><br/>
-            <input type="submit" class="my-button" value="Time liked" name="year_liked">
-            <input type="submit" class="my-button" value="List liked videos" name="list_videos"><br/><br/>
+            <input type="submit" class="my-button" value="List Drive files" name="list_files">
+</div>
+            <br/><p>Retrive some data from YouTube</p>
+<div class="youtube">
+            <input type="submit" class="my-button" value="Time liked" name="year_liked"><br/><br/>
+            <input type="submit" class="my-button" value="List liked videos" name="list_videos"><br/>
+</div>
         </form>';
 
     $drive_filetypes = array();
@@ -88,15 +89,15 @@ if (isset($authUrl)) {
 
 
 if(isset($_POST["submit"])) {
-    display_drive_data(array_count_values($drive_filetypes), "type", "number", 1);
+    display_drive_data(array_count_values($drive_filetypes), "type", "number", 2);
 }
 
 if(isset($_POST["year_created"])) {
-    display_drive_data(array_count_values($drive_created_dates), "year", "filenumber", 3);
+    display_drive_data(array_count_values($drive_created_dates), "year", "filenumber", 2);
 }
 
 if(isset($_POST["year_liked"])) {
-    display_drive_data(array_count_values($youtube_like_dates), "yearliked", "likenumber", 5);
+    display_drive_data(array_count_values($youtube_like_dates), "yearliked", "likenumber", 2);
 }
 
 if(isset($_POST["list_videos"])) {
@@ -116,6 +117,6 @@ if(isset($_POST["list_files"])) {
     echo "</ul>";
 }
 echo '</div>';
-echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_drive_worksheet_id().'"></iframe>';
+echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_data_worksheet_id().'"></iframe>';
 
 ?>
