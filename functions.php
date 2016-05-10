@@ -17,6 +17,45 @@ function html_header($title)
     return $html;
 }
 
+function html_start($authUrl)
+{
+    $html = "";
+    $html .= '<br><br><br><br><p>Welcome! This app needs your permission to get access to your Google Drive and Youtube accounts</p>
+    <p>Please click "Start" to continue</p><br><br>
+    <a class="my-button" href="' . $authUrl . '">Start</a> <br />';
+    return $html;
+}
+
+function html_form($username)
+{
+    $html = "";
+    $html .= '<a class="my-button logout" href="/?logout">Log out</a><br /><br />
+        <span class="username">Hi, ' . $username . '</span>
+        <p>Display and systematize data from Google Drive</p>
+        <form method="POST">    
+        <div class="drive">
+            <img src="img/drive.ico">
+            <span class=""> Consider trashed files <input type="checkbox" name="trashed" checked /></span><br/><br/>
+            <input type="submit" class="my-button" value="File types" name="submit"><br/><br/>
+            <input type="submit" class="my-button" value="Time created" name="year_created"><br/><br/>
+            <input type="submit" class="my-button" value="List Drive files" name="list_files">
+        </div>
+            <br/><p>Retrive some data from YouTube</p>
+        <div class="youtube">
+            <img src="img/youtube.png">
+            <input type="submit" class="my-button" value="Time liked" name="year_liked"><br/><br/>
+            <input type="submit" class="my-button" value="List liked videos" name="list_videos"><br/>
+        </div>
+            <a target="_blank" 
+            href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='
+            .get_data_worksheet_id().'"><img src="img/fullscreen.gif"></a>&nbsp&nbsp
+            <a href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/export?format=xlsx">
+            <img src="img/save.png"></a>&nbsp&nbsp
+            <a name="clear" href="?clear">  <img src="img/clear.png"></a>
+        </form>';
+    return $html;
+}
+
 
 function provide_clear_worksheet(){
     // get spreadsheet by title

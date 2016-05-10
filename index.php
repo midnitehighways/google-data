@@ -27,41 +27,11 @@ if ($client->getAccessToken()) {
 }
 
 echo html_header("Fetch Google Data and Show Stats");
-?>
-
-
-<?php 
 
 if (isset($authUrl)) {
-    echo '<br><br><br><br><p>Welcome! This app needs your permission to get access to your Google Drive and Youtube accounts</p>
-    <p>Please click "Start" to continue</p><br><br>
-    <a class="my-button" href="' . $authUrl . '">Start</a> <br />';
+    echo html_start($authUrl);
 } else {
-    
-    echo '<a class="my-button logout" href="/?logout">Log out</a><br /><br />
-        <span class="username">Hi, ' . $about->getName() . '</span>
-        <p>Display and systematize data from Google Drive</p>
-        <form method="POST">    
-        <div class="drive">
-            <img src="img/drive.ico">
-            <span class=""> Consider trashed files <input type="checkbox" name="trashed" checked /></span><br/><br/>
-            <input type="submit" class="my-button" value="File types" name="submit"><br/><br/>
-            <input type="submit" class="my-button" value="Time created" name="year_created"><br/><br/>
-            <input type="submit" class="my-button" value="List Drive files" name="list_files">
-        </div>
-            <br/><p>Retrive some data from YouTube</p>
-        <div class="youtube">
-            <img src="img/youtube.png">
-            <input type="submit" class="my-button" value="Time liked" name="year_liked"><br/><br/>
-            <input type="submit" class="my-button" value="List liked videos" name="list_videos"><br/>
-        </div>
-            <a target="_blank" 
-            href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='
-            .get_data_worksheet_id().'"><img src="img/fullscreen.gif"></a>&nbsp&nbsp
-            <a href="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/export?format=xlsx">
-            <img src="img/save.png"></a>&nbsp&nbsp
-            <a type="submit" name="clear" href="?clear">  <img src="img/clear.png"></a>
-        </form>';
+    echo html_form($about->getName());
 
     $drive_filetypes = array();
     $drive_created_dates = array();
