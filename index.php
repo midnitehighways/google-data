@@ -66,16 +66,16 @@ if (isset($authUrl)) {
 
 
 
-if(isset($_POST["submit"])) {
-    display_drive_data(array_count_values($drive_filetypes), "type", "number", 2);
+if(isset($_POST["type_of_file"])) {
+    display_drive_data($drive_filetypes, "type", "number", 1);
 }
 
 if(isset($_POST["year_created"])) {
-    display_drive_data(array_count_values($drive_created_dates), "year", "filenumber", 2);
+    display_drive_data($drive_created_dates, "year", "filenumber", 1);
 }
 
 if(isset($_POST["year_liked"])) {
-    display_drive_data(array_count_values($youtube_like_dates), "yearliked", "likenumber", 2);
+    display_drive_data($youtube_like_dates, "yearliked", "likenumber", 1);
 }
 
 if(isset($_GET["clear"])) {
@@ -100,6 +100,6 @@ if(isset($_POST["list_files"])) {
 }
 
 echo '</div>';
-echo '<iframe class="spreadsheet" src="https://docs.google.com/spreadsheets/d/11kI3ihoDbGsrVSOVfr1UMCQr7k3TE0a-oOlaCrtFYlE/edit#gid='.get_data_worksheet_id().'"></iframe>';
+echo '<iframe class="spreadsheet" src="' . SPREADSHEET_URL . 'edit#gid='.get_data_worksheet_id().'"></iframe>';
 
 ?>
