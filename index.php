@@ -100,7 +100,6 @@ if(isset($_POST["list_files"])) {
     echo "</ul>";
 }
 
-echo '</div>';
-echo '<iframe class="spreadsheet" src="' . SPREADSHEET_URL . 'edit#gid='.get_data_worksheet_id().'"></iframe>';
+echo html_closing_part();
 
 ?>

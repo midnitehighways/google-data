@@ -77,6 +77,7 @@ function get_data_worksheet_id(){
 
 /**
  * @param (string) $title - both site title and the main header
+ * @var (string) $html
  * @return {string} $html
  */
 function html_header($title)
@@ -140,13 +141,33 @@ function html_form($username)
             </div>
 
             <a target="_blank" 
-            href="' . SPREADSHEET_URL . 'edit#gid=' . get_data_worksheet_id() . '"><img src="img/fullscreen.gif"></a>&nbsp&nbsp
+            href="' . SPREADSHEET_URL . 'edit#gid=' . get_data_worksheet_id() . '">
+            <img src="img/fullscreen.gif"></a>&nbsp&nbsp
             <a href="' . SPREADSHEET_URL . 'export?format=xlsx"> <img src="img/save.png"></a>&nbsp&nbsp
             <a name="clear" href="?clear">  <img src="img/clear.png"></a>
         </form>';
     return $html;
 }
 
+/**
+ * iframe (right part) and footer
+ * @return {string} $html
+ */
+
+function html_closing_part()
+{
+    $html = "";
+    $html .= '</div>
+            <iframe class="spreadsheet" src="' . SPREADSHEET_URL . 'edit#gid='.get_data_worksheet_id().'"></iframe>
+            <div class="footer">
+                &#169; 2016 
+                <a target="_blank" href="https://www.linkedin.com/in/alexandruoat">Alexandru Oat</a> | This project on 
+                <a target="_blank" href="https://github.com/midnitehighways/google-data">GitHub</a> 
+            </div>
+        </body>
+    </html>';
+    return $html;
+}
 
 
 /*
@@ -219,7 +240,6 @@ function get_drive_created_dates($result_array) {
         $row = array('year'=>$file_type, 'filenumber'=>$file_number); 
         $listFeed->insert($row);
     }
-
 
 }
 
