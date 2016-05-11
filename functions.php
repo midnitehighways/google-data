@@ -1,6 +1,84 @@
 <?php
 
+/**
+ * Display fetched data in spreadsheet
+ * @param {array} $result_array - contains data fetched from Drive
+ * @param {string} $table_header_1 && $table_header_2 - headers for a worksheet
+ * @param {integer} $column_position - OX-position (left-upper corner) for a table
+ * @var {array} $result_array - contains the number of each value in fetched $data_array
+ */
+function display_drive_data($data_array, $table_header_1, $table_header_2, $column_position) {
+    
+    // get the number of occurences for each element and sort results
+    $result_array = array_count_values($data_array);
+    ksort($result_array);
+    
+    $worksheet = provide_clear_worksheet();
+    
+    // set headers for a table
+    $cellFeed = $worksheet->getCellFeed();
+    $cellFeed->editCell(1, $column_position, $table_header_1);  
+    $cellFeed->editCell(1, $column_position+1, $table_header_2);
 
+    // display results in the spreadsheet, row by row
+    $listFeed = $worksheet->getListFeed();
+    foreach ($result_array as $key=>$value) {
+        $row = array($table_header_1=>$key, $table_header_2=>$value); 
+        $listFeed->insert($row);
+    }
+}
+
+/**
+ * Get given spreadsheet and worksheet and recreate worksheet: 
+ * a way to clear all it's contents
+ * @return {object} $worksheet - in our case Data-sheet of report-spreadsheet
+ */
+function provide_clear_worksheet(){
+    
+    // get spreadsheet by title
+    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
+    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
+    $spreadsheet = $spreadsheetFeed->getByTitle(SPREADSHEET_TITLE);
+
+    // get particular worksheet of the selected spreadsheet 
+    $worksheetFeed = $spreadsheet->getWorksheets();
+    $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
+
+    // recreate spreadsheet
+    $worksheet->delete();
+    $spreadsheet->addWorksheet(WORKSHEET_TITLE, 25, 15);
+    $worksheetFeed = $spreadsheet->getWorksheets();
+
+    return $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
+}
+
+/**
+ * Retrieve the 'Gid' of the needed worksheet.
+ * This function is called when showing spreadsheet in <iframe>.
+ * Thus, the needed worksheet is opened by default
+ * @return {string} $worksheet's gid
+ */
+function get_data_worksheet_id(){
+    
+    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
+    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
+    $spreadsheet = $spreadsheetFeed->getByTitle(SPREADSHEET_TITLE);
+
+    // get particular worksheet of the selected spreadsheet 
+    $worksheetFeed = $spreadsheet->getWorksheets();
+    $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
+    return $worksheet->getGid();//->getWorksheetId();
+}
+
+
+/*********************************
+** HTML functions
+**********************************/
+
+/**
+ * @param (string) $title - both site title and the main header
+ * @return {string} $html
+ */
 function html_header($title)
 {
     $html = "";
@@ -17,6 +95,12 @@ function html_header($title)
     return $html;
 }
 
+/**
+ * start page - before authenticating
+ * @param (string) $authUrl - previously created URL for authentification 
+ * @return {string} $html
+ */
+
 function html_start($authUrl)
 {
     $html = "";
@@ -25,6 +109,12 @@ function html_start($authUrl)
     <a class="my-button" href="' . $authUrl . '">Start</a> <br />';
     return $html;
 }
+
+/**
+ * .left-div - form and three other buttons
+ * @param (string) $username - $dr_service->about->get()->getName()
+ * @return {string} $html
+ */
 
 function html_form($username)
 {
@@ -48,69 +138,14 @@ function html_form($username)
                 <input type="submit" class="my-button" value="Time liked" name="year_liked"><br/><br/>
                 <input type="submit" class="my-button" value="List liked videos" name="list_videos"><br/>
             </div>
-                <a target="_blank" 
-                href="' . SPREADSHEET_URL . 'edit#gid=' . get_data_worksheet_id() . '"><img src="img/fullscreen.gif"></a>&nbsp&nbsp
-                <a href="' . SPREADSHEET_URL . 'export?format=xlsx"> <img src="img/save.png"></a>&nbsp&nbsp
-                <a name="clear" href="?clear">  <img src="img/clear.png"></a>
+
+            <a target="_blank" 
+            href="' . SPREADSHEET_URL . 'edit#gid=' . get_data_worksheet_id() . '"><img src="img/fullscreen.gif"></a>&nbsp&nbsp
+            <a href="' . SPREADSHEET_URL . 'export?format=xlsx"> <img src="img/save.png"></a>&nbsp&nbsp
+            <a name="clear" href="?clear">  <img src="img/clear.png"></a>
         </form>';
     return $html;
 }
-
-
-function provide_clear_worksheet(){
-    // get spreadsheet by title
-    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-    $spreadsheet = $spreadsheetFeed->getByTitle(SPREADSHEET_TITLE);
-
-    // get particular worksheet of the selected spreadsheet 
-    $worksheetFeed = $spreadsheet->getWorksheets();
-    $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
-
-    $worksheet->delete();
-
-    $spreadsheet->addWorksheet(WORKSHEET_TITLE, 15, 9);
-    $worksheetFeed = $spreadsheet->getWorksheets();
-
-    return $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
-}
-/**
- * Display fetched data in spreadsheet
- * @param {array} $result_array - contains data fetched from Drive
- * @param {string} $table_header_1 && $table_header_2 - headers for a worksheet
- * @param {integer} $column_position - OX-position (left-upper corner) for a table
- * @return nothing so far
- */
-function display_drive_data($data_array, $table_header_1, $table_header_2, $column_position) {
-    $result_array = array_count_values($data_array);
-    ksort($result_array);
-    $worksheet = provide_clear_worksheet();
-    
-    // set headers for a table
-    $cellFeed = $worksheet->getCellFeed();
-    $cellFeed->editCell(1, $column_position, $table_header_1);  
-    $cellFeed->editCell(1, $column_position+1, $table_header_2);
-
-    // display keys and values of fetched array in the spreadshit
-    $listFeed = $worksheet->getListFeed();
-
-    foreach ($result_array as $key=>$value) {
-        $row = array($table_header_1=>$key, $table_header_2=>$value); 
-        $listFeed->insert($row);
-    }
-}
-
-function get_data_worksheet_id(){
-    $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-    $spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-    $spreadsheet = $spreadsheetFeed->getByTitle(SPREADSHEET_TITLE);
-
-    // get particular worksheet of the selected spreadsheet 
-    $worksheetFeed = $spreadsheet->getWorksheets();
-    $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
-    return $worksheet->getGid();//->getWorksheetId();
-}
-
 
 
 

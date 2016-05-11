@@ -22,7 +22,7 @@ if ($client->getAccessToken()) {
           "snippet",
           array("playlistId" => $likePlaylist, 'maxResults' => 50)
     );
-  //$yt_videos = $yt_service->videos->listVideos('contentDetails', array("playlistId" => $likePlaylist));
+  
     $about = $dr_service->about->get();     // use it later to ->getName() of authenticated user
 }
 
