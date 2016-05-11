@@ -76,15 +76,16 @@ function provide_clear_worksheet(){
 }
 /**
  * Display fetched data in spreadsheet
- * @param array $result_array - contains data fetched from Drive
- * @param array $table_header_1 - header for a worksheet
- * @param array $column_position - OX-position (left-upper corner) for a table
+ * @param {array} $result_array - contains data fetched from Drive
+ * @param {string} $table_header_1 && $table_header_2 - headers for a worksheet
+ * @param {integer} $column_position - OX-position (left-upper corner) for a table
  * @return nothing so far
  */
 function display_drive_data($data_array, $table_header_1, $table_header_2, $column_position) {
     $result_array = array_count_values($data_array);
     ksort($result_array);
     $worksheet = provide_clear_worksheet();
+    
     // set headers for a table
     $cellFeed = $worksheet->getCellFeed();
     $cellFeed->editCell(1, $column_position, $table_header_1);  
@@ -109,9 +110,6 @@ function get_data_worksheet_id(){
     $worksheet = $worksheetFeed->getByTitle(WORKSHEET_TITLE);
     return $worksheet->getGid();//->getWorksheetId();
 }
-
-
-
 
 
 

@@ -40,12 +40,13 @@ if (isset($authUrl)) {
 
     foreach ($dr_results as $item) {
         if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {       // either 'show trashed' checked or file isn't trashed
-//            echo $item->title, "<br /> \n";
   
             $datetime = new DateTime($item->createdDate);
-            array_push($drive_created_dates, $datetime->format('Y'));
+            $year = $datetime->format('Y');
+            array_push($drive_created_dates, $year);
 
             $info = new SplFileInfo($item->title);           // using this class to get file extension
+            
             if($info->getExtension()) {
               array_push($drive_filetypes, strtolower($info->getExtension()));
             }
