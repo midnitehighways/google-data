@@ -7,6 +7,7 @@ $client->setClientId(CLIENT_ID);
 $client->setClientSecret(CLIENT_SECRET);
 $client->addScope("https://www.googleapis.com/auth/drive");
 $client->addScope("https://www.googleapis.com/auth/youtube");
+$client->addScope(Google_Service_Analytics::ANALYTICS_READONLY);
 
 // set redirect URI fitting both fetchandshow.herokuapp.com and localhost
 $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];  
@@ -14,16 +15,17 @@ $client->setRedirectUri($redirect_uri);
 // $client->setAccessType('offline');
 
 
-// create services for Drive and Youtube
+// create services for Drive, Youtube and Analytics
 $yt_service = new Google_Service_YouTube($client);
 $dr_service = new Google_Service_Drive($client);
+$analytics = new Google_Service_Analytics($client);
 
 
-
-// auth management
 if (isset($_REQUEST['logout'])) {
   unset($_SESSION['access_token']);
 }
+
+// auth management
 if (isset($_GET['code'])) {
     $client->authenticate($_GET['code']);
     $_SESSION['access_token'] = $client->getAccessToken();
@@ -32,6 +34,13 @@ if (isset($_GET['code'])) {
 }
 
 if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+ // if ($client->getAccessToken()) {                                                       ///////////////
+ //     if($client->isAccessTokenExpired()) { // Oh! its not good - go for another 
+ //        $authUrl = $client->createAuthUrl();
+ //        header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
+ //        exit();
+ //    }                                                                           
+ //    }                                                                           ///////////////
     $client->setAccessToken($_SESSION['access_token']);
 } else {
     $authUrl = $client->createAuthUrl();

@@ -11,78 +11,88 @@ require 'functions.php';        // almost all functions here
                   retrieve 'likes'-playlist from YouTube -> to $yt_results
  *************************************************************************/
 if ($client->getAccessToken()) {
+    if($client->isAccessTokenExpired()) { // prevent token expiration      ///////////
+        $authUrl = $client->createAuthUrl();
+        header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
+        exit();
+    }                                                                               ///////////////
+
     $_SESSION['access_token'] = $client->getAccessToken();
 
     $dr_results = $dr_service->files->listFiles(array());
 
     $yt_channels = $yt_service->channels->listChannels('contentDetails', array("mine" => true));
-
     $likePlaylist = $yt_channels[0]->contentDetails->relatedPlaylists->likes;
     $yt_results = $yt_service->playlistItems->listPlaylistItems(
           "snippet",
           array("playlistId" => $likePlaylist, 'maxResults' => 50)
     );
   
-    $about = $dr_service->about->get();     // use it later to ->getName() of authenticated user
+    $about = $dr_service->about->get();     // used later to ->getName() of authenticated user
 }
 
 echo html_header("Fetch Google Data and Show Stats");
 
-if (isset($authUrl)) {
+// generate auth URL
+if (isset($authUrl)) {                      
     echo html_start($authUrl);
-} else {
-    echo html_form($about->getName());
 
+} else {                                    
+    echo html_form($about->getName());
     $drive_filetypes = array();
     $drive_created_dates = array();
     $youtube_like_dates = array();
     //var_dump($_POST);
 
+
+    // handle DRIVE data
     foreach ($dr_results as $item) {
-        if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {       // either 'show trashed' checked or file isn't trashed
-  
+        if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {  // either 'show trashed' option is checked or file isn't trashed
+
             $datetime = new DateTime($item->createdDate);
-            $year = $datetime->format('Y');
+            $year = $datetime->format('Y');                            // retrieve year from file's date of creation
             array_push($drive_created_dates, $year);
 
-            $info = new SplFileInfo($item->title);           // using this class to get file extension
+            $info = new SplFileInfo($item->title);                     // using this class to get file extension
             
             if($info->getExtension()) {
-              array_push($drive_filetypes, strtolower($info->getExtension()));
+                array_push($drive_filetypes, strtolower($info->getExtension()));
             }
-            else {                                           // no extension
-              array_push($drive_filetypes, "none");
+            else {                                                     // if file got no extension -> just put 'none' to resulting array
+                array_push($drive_filetypes, "none");
             }
         }
     }
   
-  //print_r(array_count_values($drive_created_dates));
-
-  foreach ($yt_results as $item) {
-    $datetime = new DateTime($item['snippet']['publishedAt']);
-    array_push($youtube_like_dates, $datetime->format('Y'));
-  }
-}
-
+    // handle YOUTUBE data
+    foreach ($yt_results as $item) {
+        $datetime = new DateTime($item['snippet']['publishedAt']);
+        array_push($youtube_like_dates, $datetime->format('Y'));
+    }
+} //---> else
 
 
-
+// Types of files on Drive
 if(isset($_POST["type_of_file"])) {
     display_drive_data($drive_filetypes, "type", "number", 1);
 }
 
+// Files on Drive by year of creation
 if(isset($_POST["year_created"])) {
     display_drive_data($drive_created_dates, "year", "filenumber", 1);
 }
 
+// Info about liked YouTube videos by year when it was liked
 if(isset($_POST["year_liked"])) {
     display_drive_data($youtube_like_dates, "yearliked", "likenumber", 1);
 }
 
+// clear worksheet
 if(isset($_GET["clear"])) {
     provide_clear_worksheet();
 }
 
+// just display titles of liked videos below the form 
 if(isset($_POST["list_videos"])) {
     echo "<h4>Your YouTube likes</h4><ul>";
     foreach ($yt_results as $item)
@@ -90,10 +100,11 @@ if(isset($_POST["list_videos"])) {
     echo "</ul>";
 }
 
+// list all files on Google Drive
 if(isset($_POST["list_files"])) {
     echo "<h4>Files on your Google Drive</h4><ul>";
     foreach ($dr_results as $item) {
-        if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {       // either 'show trashed' checked or file isn't trashed
+        if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {
             echo '<li>' . $item->title . '</li>';
         }
     }

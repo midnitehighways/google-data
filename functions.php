@@ -30,7 +30,7 @@ function display_drive_data($data_array, $table_header_1, $table_header_2, $colu
 
 /**
  * Get given spreadsheet and worksheet and recreate worksheet: 
- * a way to clear all it's contents
+ * a way to clear its contents completely
  * @return {object} $worksheet - in our case Data-sheet of report-spreadsheet
  */
 function provide_clear_worksheet(){
