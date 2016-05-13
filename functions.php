@@ -70,6 +70,80 @@ function get_data_worksheet_id(){
     return $worksheet->getGid();//->getWorksheetId();
 }
 
+/*********************************
+** Google Analytics
+**********************************/
+
+// get the user's first view (profile) ID
+function getFirstProfileId(&$analytics) {
+  
+    // retrieve list of accounts
+    $accounts = $analytics->management_accounts->listManagementAccounts();
+
+    if (count($accounts->getItems()) > 0) {
+        $items = $accounts->getItems();
+        $firstAccountId = $items[0]->getId();
+
+        // get list of properties
+        $properties = $analytics->management_webproperties
+            ->listManagementWebproperties($firstAccountId);
+
+        if (count($properties->getItems()) > 0) {
+            $items = $properties->getItems();
+            $firstPropertyId = $items[0]->getId();
+
+            // get list of views (profiles)
+            $profiles = $analytics->management_profiles->listManagementProfiles($firstAccountId, $firstPropertyId);
+
+        if (count($profiles->getItems()) > 0) {
+            $items = $profiles->getItems();
+            // return the first view (profile) ID.
+            return $items[0]->getId();
+
+          } else {
+                throw new Exception('No views (profiles) found for this user.');
+          }
+        } else {
+            throw new Exception('No properties found for this user.');
+        }
+  } else {
+        throw new Exception('No accounts found for this user.');
+  }
+}
+
+// query API for the number of sessions
+// for the last seven days
+function getResults(&$analytics, $profileId) {
+    return $analytics->data_ga->get(
+        'ga:' . $profileId,
+        '7daysAgo',
+        'today',
+        'ga:sessions');
+}
+
+  // Parse the response from API and print
+  // the profile name and total sessions
+function printResults(&$results) {
+    if (count($results->getRows()) > 0) {
+
+        // get the profile name
+        $profileName = $results->getProfileInfo()->getProfileName();
+
+        // get the entry for the first entry in the first row
+        $rows = $results->getRows();
+        $sessions = $rows[0][0];
+
+        // display results
+        //print "<p>First view (profile) found: $profileName</p>";
+        print "<p>Info from Google Analytics for $profileName</p>
+                <p>Total sessions for the last week: $sessions</p>";
+    } else {
+        print "<p>No results found.</p>";
+    }
+}
+
+
+
 
 /*********************************
 ** HTML functions

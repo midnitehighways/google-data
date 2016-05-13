@@ -45,7 +45,16 @@ if (isset($authUrl)) {
     //var_dump($_POST);
 
 
-    // handle DRIVE data
+    // RESULTS FROM ANALYTICS API
+    // get the first view (profile) id for the authorized user
+    $profile = getFirstProfileId($analytics);
+
+    // retreive results from Analytics (Reporting) API and print'em
+    $results = getResults($analytics, $profile);
+    printResults($results);
+
+
+    // HANDLE DRIVE DATA
     foreach ($dr_results as $item) {
         if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {  // either 'show trashed' option is checked or file isn't trashed
 
@@ -64,7 +73,7 @@ if (isset($authUrl)) {
         }
     }
   
-    // handle YOUTUBE data
+    // HANDLE YOUTUBE DATA
     foreach ($yt_results as $item) {
         $datetime = new DateTime($item['snippet']['publishedAt']);
         array_push($youtube_like_dates, $datetime->format('Y'));
