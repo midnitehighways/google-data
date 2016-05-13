@@ -47,11 +47,22 @@ if (isset($authUrl)) {
 
     // RESULTS FROM ANALYTICS API
     // get the first view (profile) id for the authorized user
-    $profile = getFirstProfileId($analytics);
-
+    try {
+        $profile = getFirstProfileId($analytics);
+    }
+    catch(Exception $e) {
+        //echo 'Caught exception: ',  $e->getMessage(), "\n";
+    }
     // retreive results from Analytics (Reporting) API and print'em
+    //$results;
     $results = getResults($analytics, $profile);
-    printResults($results);
+    try {
+        printResults($results);
+    }
+    catch(Exception $e) {
+        //echo 'Caught exception: ',  $e->getMessage(), "\n";
+    }
+
 
 
     // HANDLE DRIVE DATA

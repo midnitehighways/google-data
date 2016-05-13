@@ -22,7 +22,7 @@ $analytics = new Google_Service_Analytics($client);
 
 
 if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['access_token']);
+    unset($_SESSION['access_token']);
 }
 
 // auth management
@@ -34,13 +34,6 @@ if (isset($_GET['code'])) {
 }
 
 if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
- // if ($client->getAccessToken()) {                                                       ///////////////
- //     if($client->isAccessTokenExpired()) { // Oh! its not good - go for another 
- //        $authUrl = $client->createAuthUrl();
- //        header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
- //        exit();
- //    }                                                                           
- //    }                                                                           ///////////////
     $client->setAccessToken($_SESSION['access_token']);
 } else {
     $authUrl = $client->createAuthUrl();

@@ -71,7 +71,7 @@ function get_data_worksheet_id(){
 }
 
 /*********************************
-** Google Analytics
+** Google Analytics (TESTING!!!)
 **********************************/
 
 // get the user's first view (profile) ID
@@ -114,16 +114,24 @@ function getFirstProfileId(&$analytics) {
 // query API for the number of sessions
 // for the last seven days
 function getResults(&$analytics, $profileId) {
-    return $analytics->data_ga->get(
+    try {
+        $a_results = $analytics->data_ga->get(
         'ga:' . $profileId,
         '7daysAgo',
         'today',
         'ga:sessions');
 }
+        catch (Exception $e) {
+        //echo 'Caught exception: ',  $e->getMessage(), "\n";
+        return null;
+    }
+    return $a_results;
+}
 
-  // Parse the response from API and print
-  // the profile name and total sessions
+// Parse the response from API and print
+// the profile name and total sessions
 function printResults(&$results) {
+    if ($results) {
     if (count($results->getRows()) > 0) {
 
         // get the profile name
@@ -137,9 +145,14 @@ function printResults(&$results) {
         //print "<p>First view (profile) found: $profileName</p>";
         print "<p>Info from Google Analytics for $profileName</p>
                 <p>Total sessions for the last week: $sessions</p>";
-    } else {
-        print "<p>No results found.</p>";
+    }}
+    else {
+                print "<p>No Google Analytics account detected</p>";
     }
+
+    //  else {
+    //     print "<p>No results found.</p>";
+    // }
 }
 
 
