@@ -31,7 +31,7 @@ function display_drive_data($data_array, $table_header_1, $table_header_2, $colu
 /**
  * Get given spreadsheet and worksheet and recreate worksheet: 
  * a way to clear its contents completely
- * @return {object} $worksheet - in our case Data-sheet of report-spreadsheet
+ * @return {object} $worksheet - Data-sheet of report-spreadsheet in our case
  */
 function provide_clear_worksheet(){
     
@@ -71,10 +71,14 @@ function get_data_worksheet_id(){
 }
 
 /*********************************
-** Google Analytics (TESTING!!!)
+** Google Analytics (TESTING MODE!!!!)
 **********************************/
 
-// get the user's first view (profile) ID
+/**
+ * Get the user's first view (profile) ID
+ * @param {reference} &$analytics
+ * @return {string} $items[0]->getId()
+ */
 function getFirstProfileId(&$analytics) {
   
     // retrieve list of accounts
@@ -93,11 +97,12 @@ function getFirstProfileId(&$analytics) {
             $firstPropertyId = $items[0]->getId();
 
             // get list of views (profiles)
-            $profiles = $analytics->management_profiles->listManagementProfiles($firstAccountId, $firstPropertyId);
+            $profiles = $analytics->management_profiles
+                ->listManagementProfiles($firstAccountId, $firstPropertyId);
 
         if (count($profiles->getItems()) > 0) {
             $items = $profiles->getItems();
-            // return the first view (profile) ID.
+            // return the first view (profile) ID
             return $items[0]->getId();
 
           } else {
@@ -110,28 +115,26 @@ function getFirstProfileId(&$analytics) {
         throw new Exception('No accounts found for this user.');
   }
 }
-
-// query API for the number of sessions
-// for the last seven days
+ 
+/**
+ * Query API for the number of sessions
+ * for the last seven days
+ * @return {object} $a_results
+ */
 function getResults(&$analytics, $profileId) {
-    try {
-        $a_results = $analytics->data_ga->get(
+    
+    $a_results = $analytics->data_ga->get(
         'ga:' . $profileId,
         '7daysAgo',
         'today',
         'ga:sessions');
-}
-        catch (Exception $e) {
-        //echo 'Caught exception: ',  $e->getMessage(), "\n";
-        return null;
-    }
     return $a_results;
 }
-
-// Parse the response from API and print
-// the profile name and total sessions
+/**
+ * Parse response from API and display results
+ * @param {reference} &$results
+ */ 
 function printResults(&$results) {
-    if ($results) {
     if (count($results->getRows()) > 0) {
 
         // get the profile name
@@ -145,16 +148,11 @@ function printResults(&$results) {
         //print "<p>First view (profile) found: $profileName</p>";
         print "<p>Info from Google Analytics for $profileName</p>
                 <p>Total sessions for the last week: $sessions</p>";
-    }}
+    }
     else {
                 print "<p>No Google Analytics account detected</p>";
     }
-
-    //  else {
-    //     print "<p>No results found.</p>";
-    // }
 }
-
 
 
 
@@ -259,8 +257,8 @@ function html_closing_part()
 
 /*
 **************************************
-    OLD AND NOT USED FUNCTIONS BELOW
-    didn't remove 'just in case'
+    OLD AND UNUSED FUNCTIONS BELOW
+    not removed 'just in case'
 **************************************
 */ 
 

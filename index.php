@@ -45,22 +45,19 @@ if (isset($authUrl)) {
     //var_dump($_POST);
 
 
-    // RESULTS FROM ANALYTICS API
-    // get the first view (profile) id for the authorized user
+    // HANDLE RESULTS FROM ANALYTICS API
     try {
         $profile = getFirstProfileId($analytics);
-    }
-    catch(Exception $e) {
-        //echo 'Caught exception: ',  $e->getMessage(), "\n";
-    }
-    // retreive results from Analytics (Reporting) API and print'em
-    //$results;
-    $results = getResults($analytics, $profile);
-    try {
+        
+        // retreive results from Analytics (Reporting) API and print'em
+        $results = getResults($analytics, $profile);
         printResults($results);
     }
+    
+    // catch here the error: when authenticated user got no Analytics account
     catch(Exception $e) {
         //echo 'Caught exception: ',  $e->getMessage(), "\n";
+        print "<p>No Google Analytics account found</p>";
     }
 
 
@@ -89,8 +86,11 @@ if (isset($authUrl)) {
         $datetime = new DateTime($item['snippet']['publishedAt']);
         array_push($youtube_like_dates, $datetime->format('Y'));
     }
-} //---> else
+}
 
+/**************************
+**  Handling user input
+***************************/
 
 // Types of files on Drive
 if(isset($_POST["type_of_file"])) {
