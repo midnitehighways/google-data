@@ -51,10 +51,11 @@ if (isset($authUrl)) {
         
         // retreive results from Analytics (Reporting) API and print'em
         $results = getResults($analytics, $profile);
-        
+        print_r($results);
+        //printResults($results);
     }
     
-    // catch here the error: when authenticated user got no Analytics account
+    // catch here 403 error: when authenticated user got no Analytics account
     catch(Exception $e) {
         //echo 'Caught exception: ',  $e->getMessage(), "\n";
         print "<p>No Google Analytics account found</p>";
@@ -95,7 +96,7 @@ if (isset($authUrl)) {
 // Types of files on Drive
 if(isset($_POST["week_sessions"])) {
     //display_drive_data($drive_filetypes, "type", "number", 1);
-    printResults($results);
+
 }
 
 // Types of files on Drive

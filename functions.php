@@ -122,13 +122,27 @@ function getFirstProfileId(&$analytics) {
  * @return {object} $a_results
  */
 function getResults(&$analytics, $profileId) {
-    
-    $a_results = $analytics->data_ga->get(
-        'ga:' . $profileId,
-        '7daysAgo',
-        'today',
-        'ga:sessions');
-    return $a_results;
+    for($i = 4; $i > 0; $i--) {
+
+        $start_date = strtotime("-$i week");
+        $j=$i-1;
+        $end_date = strtotime("-$j week");
+
+        $a_results = $analytics->data_ga->get(
+            'ga:' . $profileId,
+            date('Y-m-d', $start_date),
+            date('Y-m-d', $end_date),
+            'ga:sessions');
+
+        if (count($a_results->getRows()) > 0) {
+
+            // get the entry for the first entry in the first row
+            $rows = $a_results->getRows();
+            $sessions = $rows[0][0];
+            $weeks_sessions[date('d-M-Y', $end_date)] = $sessions;
+        }
+    }
+    return $weeks_sessions;
 }
 /**
  * Parse response from API and display results
