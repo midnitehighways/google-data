@@ -51,7 +51,7 @@ if (isset($authUrl)) {
         
         // retreive results from Analytics (Reporting) API and print'em
         $results = getResults($analytics, $profile);
-        printResults($results);
+        
     }
     
     // catch here the error: when authenticated user got no Analytics account
@@ -91,6 +91,12 @@ if (isset($authUrl)) {
 /**************************
 **  Handling user input
 ***************************/
+
+// Types of files on Drive
+if(isset($_POST["week_sessions"])) {
+    //display_drive_data($drive_filetypes, "type", "number", 1);
+    printResults($results);
+}
 
 // Types of files on Drive
 if(isset($_POST["type_of_file"])) {

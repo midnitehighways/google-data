@@ -208,7 +208,7 @@ function html_form($username)
     $html .= '<a class="my-button logout" href="/?logout">Log out</a><br /><br />
         <span class="username">Hi, ' . $username . '</span>
         
-        <p>Display and systematize data from Google Drive</p>
+        <p style="margin-top: -20px;">Display and systematize data from Google Drive</p>
         <form method="POST">    
             <div class="drive">
                 <img src="img/drive.ico">
@@ -217,8 +217,12 @@ function html_form($username)
                 <input type="submit" class="my-button" value="Time created" name="year_created"><br/><br/>
                 <input type="submit" class="my-button" value="List Drive files" name="list_files">
             </div>
-
-            <br/><p>Retrive some data from YouTube</p>
+            <p>Fetch data from Google Analytics</p>
+            <div class="analytics">
+                <img src="img/analytics.png">
+                <input type="submit" class="my-button" value="Week sessions" name="week_sessions"><br/><br/>
+            </div>
+            <p>Retrive some data from YouTube</p>
             <div class="youtube">
                 <img src="img/youtube.png">
                 <input type="submit" class="my-button" value="Time liked" name="year_liked"><br/><br/>

@@ -17,12 +17,15 @@ body {
 	margin-left: 30px;
 }
 
-.youtube, .drive {
+.youtube, .drive, .analytics {
 	padding: 10px;
 	border-radius: 7px;
 	border: 1px #ddd solid;
 }
-
+.analytics {
+	padding-top: 20px;
+	padding-bottom: 0px;
+}
 header {
 	color: #777;
 	font-size: 18px;
@@ -55,6 +58,7 @@ img {
     border: 1px solid #555;
     border-radius: 8px;
 }
+
 .pic {
     /*padding: 25px 15px 15px 15px;*/
 
@@ -74,14 +78,16 @@ button {
 
 }
 */
-.youtube img, .drive img {
+.youtube img, .drive img, .analytics img {
 	/*position: absolute;*/
 	float: left;
 	top: 5px;
 	left: 5px;
 	border: 0;
 	margin-right: -20px;
-
+}
+.analytics img {
+	margin-top: -10px;
 }
 .drive img {
 	padding-top: 50px;
@@ -90,7 +96,7 @@ button {
 .my-button {
   	-webkit-border-radius: 10px;
   	-moz-border-radius: 10px;
-  	border-radius: 8px;
+  	border-radius: 10px;
   	font-weight: 300;
   	width: 150px;
  	color: #333;
@@ -105,7 +111,7 @@ button {
 }
 
 .my-button:hover, img:hover {
- 	border-radius: 2px;
+ 	border-radius: 3px;
  	color: #0831EA;
  	transition: all .3s ease-in-out; 
 }
