@@ -45,13 +45,15 @@ if (isset($authUrl)) {
     //var_dump($_POST);
 
 
+///////////// !! TODO: MOVE ALL HANDLEs TO FUNCTIONS!!!!!! and call'em from 'isset'-s
+    
     // HANDLE RESULTS FROM ANALYTICS API
     try {
         $profile = getFirstProfileId($analytics);
         
         // retreive results from Analytics (Reporting) API and print'em
         $results = getResults($analytics, $profile);
-        print_r($results);
+        //print_r($results);
         //printResults($results);
     }
     
@@ -96,7 +98,10 @@ if (isset($authUrl)) {
 // Types of files on Drive
 if(isset($_POST["week_sessions"])) {
     //display_drive_data($drive_filetypes, "type", "number", 1);
-
+    if($results)
+        display_analytics_data($results);
+    else
+        print "<p>No Google Analytics account found</p>";
 }
 
 // Types of files on Drive

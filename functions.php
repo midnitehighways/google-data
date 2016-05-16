@@ -28,6 +28,24 @@ function display_drive_data($data_array, $table_header_1, $table_header_2, $colu
     }
 }
 
+function display_analytics_data($results_array) {
+    
+    $worksheet = provide_clear_worksheet();
+    
+    // set headers for a table
+    $cellFeed = $worksheet->getCellFeed();
+    $cellFeed->editCell(1, 1, 'week');  
+    $cellFeed->editCell(1, 2, 'sessions');
+
+    // display results in the spreadsheet, row by row
+    $listFeed = $worksheet->getListFeed();
+    foreach ($results_array as $key=>$value) {
+        $row = array('week'=>$key, 'sessions'=>$value); 
+        $listFeed->insert($row);
+    }
+
+}
+
 /**
  * Get given spreadsheet and worksheet and recreate worksheet: 
  * a way to clear its contents completely
@@ -140,6 +158,9 @@ function getResults(&$analytics, $profileId) {
             $rows = $a_results->getRows();
             $sessions = $rows[0][0];
             $weeks_sessions[date('d-M-Y', $end_date)] = $sessions;
+
+        } else {
+            return null;
         }
     }
     return $weeks_sessions;
@@ -234,7 +255,7 @@ function html_form($username)
             <p>Fetch data from Google Analytics</p>
             <div class="analytics">
                 <img src="img/analytics.png">
-                <input type="submit" class="my-button" value="Week sessions" name="week_sessions"><br/><br/>
+                <input type="submit" class="my-button" value="Sessions weekly" name="week_sessions"><br/><br/>
             </div>
             <p>Retrive some data from YouTube</p>
             <div class="youtube">
