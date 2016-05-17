@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Display fetched data in spreadsheet
- * @param {array} $result_array - contains data fetched from Drive
+ * Display fetched data in spreadsheet (from Drive and Youtube APIs)
+ * @param {array} $result_array - contains retreived data
  * @param {string} $table_header_1 && $table_header_2 - headers for a worksheet
  * @param {integer} $column_position - OX-position (left-upper corner) for a table
  * @var {array} $result_array - contains the number of each value in fetched $data_array
  */
-function display_drive_data($data_array, $table_header_1, $table_header_2, $column_position) {
+function display_drive_youtube_data($data_array, $table_header_1, $table_header_2, $column_position) {
     
     // get the number of occurences for each element and sort results
     $result_array = array_count_values($data_array);
@@ -28,6 +28,10 @@ function display_drive_data($data_array, $table_header_1, $table_header_2, $colu
     }
 }
 
+/**
+ * Display fetched data in spreadsheet (from Analytics API)
+ * @param {array} $result_array - contains data fetched from Analytics (Core Reporting API)
+ */
 function display_analytics_data($results_array) {
     
     $worksheet = provide_clear_worksheet();
@@ -43,7 +47,6 @@ function display_analytics_data($results_array) {
         $row = array('week'=>$key, 'sessions'=>$value); 
         $listFeed->insert($row);
     }
-
 }
 
 /**
@@ -88,8 +91,44 @@ function get_data_worksheet_id(){
     return $worksheet->getGid();//->getWorksheetId();
 }
 
+/**
+ * Display fetched data in spreadsheet (from Analytics API)
+ * @param {array} $result_array - contains data fetched from Analytics (Core Reporting API)
+ */
+function list_data_in_spreadsheet($results_array) {
+    
+    $worksheet = provide_clear_worksheet();
+    
+    // set headers for a table
+    $cellFeed = $worksheet->getCellFeed();
+    //$cellFeed->editCell(1, 1, 'week');  
+    $cellFeed->editCell(1, 3, 'Files on your Google Drive');
+
+    // display results in the spreadsheet, row by row
+    $listFeed = $worksheet->getListFeed();
+    $count_x = 2;
+    $count_y = 1;
+    foreach ($results_array as $item) {
+        if($count_x>24) break;                  // max results = 96 (4*24)
+        if($count_y>7) {                        // show 4 results in a row (y = 1, 3, 5, 7)
+            $count_y=1;
+            $count_x++;                         // move to next row
+        }
+        if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {
+             $cellFeed->editCell($count_x, $count_y, $item->title);
+             $count_y+=2;
+        }
+    }
+
+    // foreach ($results_array as $key=>$value) {
+    //     $row = array('week'=>$key, 'sessions'=>$value); 
+    //     $listFeed->insert($row);
+    // }
+}
+
+
 /*********************************
-** Google Analytics (TESTING MODE!!!!)
+** Google Analytics (TEST MODE!!!!)
 **********************************/
 
 /**

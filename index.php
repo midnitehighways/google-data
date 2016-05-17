@@ -106,17 +106,17 @@ if(isset($_POST["week_sessions"])) {
 
 // Types of files on Drive
 if(isset($_POST["type_of_file"])) {
-    display_drive_data($drive_filetypes, "type", "number", 1);
+    display_drive_youtube_data($drive_filetypes, "type", "number", 1);
 }
 
 // Files on Drive by year of creation
 if(isset($_POST["year_created"])) {
-    display_drive_data($drive_created_dates, "year", "filenumber", 1);
+    display_drive_youtube_data($drive_created_dates, "year", "filenumber", 1);
 }
 
 // Info about liked YouTube videos by year when it was liked
 if(isset($_POST["year_liked"])) {
-    display_drive_data($youtube_like_dates, "yearliked", "likenumber", 1);
+    display_drive_youtube_data($youtube_like_dates, "yearliked", "likenumber", 1);
 }
 
 // clear worksheet
@@ -141,6 +141,7 @@ if(isset($_POST["list_files"])) {
         }
     }
     echo "</ul>";
+    list_data_in_spreadsheet($dr_results);
 }
 
 echo html_closing_part();
