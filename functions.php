@@ -29,27 +29,6 @@ function display_drive_youtube_data($data_array, $table_header_1, $table_header_
 }
 
 /**
- * Display fetched data in spreadsheet (from Analytics API)
- * @param {array} $result_array - contains data fetched from Analytics (Core Reporting API)
- */
-function display_analytics_data($results_array) {
-    
-    $worksheet = provide_clear_worksheet();
-    
-    // set headers for a table
-    $cellFeed = $worksheet->getCellFeed();
-    $cellFeed->editCell(1, 1, 'week');  
-    $cellFeed->editCell(1, 2, 'sessions');
-
-    // display results in the spreadsheet, row by row
-    $listFeed = $worksheet->getListFeed();
-    foreach ($results_array as $key=>$value) {
-        $row = array('week'=>$key, 'sessions'=>$value); 
-        $listFeed->insert($row);
-    }
-}
-
-/**
  * Get given spreadsheet and worksheet and recreate worksheet: 
  * a way to clear its contents completely
  * @return {object} $worksheet - Data-sheet of report-spreadsheet in our case
@@ -92,44 +71,79 @@ function get_data_worksheet_id(){
 }
 
 /**
- * Display fetched data in spreadsheet (from Analytics API)
- * @param {array} $result_array - contains data fetched from Analytics (Core Reporting API)
+ * Simply list files/videos from Drive/Youtube in a spreadsheet
+ * @param {object} $results - contains data fetched from Drive or Youtube
+ * @param {string} $header
+ * @param {bool} $is_drive - defines whether it is Drive (true) or Youtube (false) data
  */
-function list_data_in_spreadsheet($results_array) {
+function list_data_in_spreadsheet($results, $header, $is_drive) {
     
     $worksheet = provide_clear_worksheet();
     
     // set headers for a table
     $cellFeed = $worksheet->getCellFeed();
-    //$cellFeed->editCell(1, 1, 'week');  
-    $cellFeed->editCell(1, 3, 'Files on your Google Drive');
+    $cellFeed->editCell(1, 3, $header);
 
-    // display results in the spreadsheet, row by row
-    $listFeed = $worksheet->getListFeed();
-    $count_x = 2;
+    $count_x = 2;                               // starting position (2, 1)
     $count_y = 1;
-    foreach ($results_array as $item) {
-        if($count_x>24) break;                  // max results = 96 (4*24)
+    
+    foreach ($results as $item) {
+        if($count_x>20) break;                  // max results = 76 (4*(20-1))
         if($count_y>7) {                        // show 4 results in a row (y = 1, 3, 5, 7)
             $count_y=1;
             $count_x++;                         // move to next row
         }
-        if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {
-             $cellFeed->editCell($count_x, $count_y, $item->title);
-             $count_y+=2;
+    
+        if ($is_drive) {                        // data from Drive API?
+            if((isset($_POST['trashed'])) || (!$item->labels->trashed)) {
+                try {                                                       // prevent special chars error
+                    $cellFeed->editCell($count_x, $count_y, $item->title);  
+                }
+                catch(Exception $e) {                                   // catch error caused by some chars in string (e.g. '&')
+                    echo "Special chars error";
+                }
+                 $count_y+=2;
+            }
+    
+        } else {                                // data from Youtube API?
+            try {
+                $cellFeed->editCell($count_x, $count_y, $item["snippet"]["title"]);
+            }
+            catch(Exception $e) {                                   // catch error caused by some chars in string (e.g. '&')
+                $string = $item["snippet"]["title"];
+                $string = preg_replace('/[^a-zA-Z0-9-]/', '', $string);     // remove all special characters
+                $cellFeed->editCell($count_x, $count_y, $string);   
+            }
+            $count_y+=2;
         }
     }
-
-    // foreach ($results_array as $key=>$value) {
-    //     $row = array('week'=>$key, 'sessions'=>$value); 
-    //     $listFeed->insert($row);
-    // }
 }
 
 
 /*********************************
 ** Google Analytics (TEST MODE!!!!)
 **********************************/
+
+/**
+ * Display fetched data in spreadsheet (from Analytics API)
+ * @param {array} $result_array - contains data fetched from Analytics (Core Reporting API)
+ */
+function display_analytics_data($results_array) {
+    
+    $worksheet = provide_clear_worksheet();
+    
+    // set headers for a table
+    $cellFeed = $worksheet->getCellFeed();
+    $cellFeed->editCell(1, 1, 'week');  
+    $cellFeed->editCell(1, 2, 'sessions');
+
+    // display results in the spreadsheet, row by row
+    $listFeed = $worksheet->getListFeed();
+    foreach ($results_array as $key=>$value) {
+        $row = array('week'=>$key, 'sessions'=>$value); 
+        $listFeed->insert($row);
+    }
+}
 
 /**
  * Get the user's first view (profile) ID
@@ -286,7 +300,7 @@ function html_form($username)
         <form method="POST">    
             <div class="drive">
                 <img src="img/drive.ico">
-                <span class=""> Consider trashed files <input type="checkbox" name="trashed" checked /></span><br/><br/>
+                <span class=""> Consider trashed files <input type="checkbox" name="trashed" /></span><br/><br/>
                 <input type="submit" class="my-button" value="File types" name="type_of_file"><br/><br/>
                 <input type="submit" class="my-button" value="Time created" name="year_created"><br/><br/>
                 <input type="submit" class="my-button" value="List Drive files" name="list_files">

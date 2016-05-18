@@ -126,10 +126,15 @@ if(isset($_GET["clear"])) {
 
 // just display titles of liked videos below the form 
 if(isset($_POST["list_videos"])) {
-    echo "<h4>Your YouTube likes</h4><ul>";
-    foreach ($yt_results as $item)
+    echo "<h4>YouTube videos you liked</h4><ul>";
+    foreach ($yt_results as $item) {
+                        $string = $item["snippet"]["title"];
+            $string = preg_replace('/[^a-zA-Z0-9-]/', '', $string);
+        echo '<li>' . $string . '</li>';
         echo '<li>' . $item["snippet"]["title"] . '</li>';
+    }
     echo "</ul>";
+    list_data_in_spreadsheet($yt_results, 'Last 50 videos you liked', false);
 }
 
 // list all files on Google Drive
@@ -141,7 +146,7 @@ if(isset($_POST["list_files"])) {
         }
     }
     echo "</ul>";
-    list_data_in_spreadsheet($dr_results);
+    list_data_in_spreadsheet($dr_results, 'Files on your Google Drive', true);
 }
 
 echo html_closing_part();
